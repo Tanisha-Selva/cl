@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDaaS Auth0 Cloud Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      text-align: center;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 { color: #eb5424; }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: white;
+      background-color: #eb5424;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 10px;
+      transition: background 0.3s;
+    }
+    .btn:hover { background-color: #c73e13; }
+    .btn-logout { background-color: #6c757d; }
+    .btn-logout:hover { background-color: #5a6268; }
+    .user-info {
+      text-align: left;
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Auth0 IDaaS Authentication</h1>
+
+    <% if (isAuthenticated) { %>
+      <h2>Welcome, <%= user.name %>!</h2>
+      <p>Logged in successfully via Auth0 IDaaS.</p>
+      
+      <div class="user-info">
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>User ID:</strong> <%= user.sub %></p>
+      </div>
+
+      <br>
+      <a href="/profile" class="btn">View Protected Profile</a>
+      <a href="/logout" class="btn btn-logout">Log Out</a>
+    <% } else { %>
+      <p>You are currently <strong>Not Authenticated</strong>.</p>
+      <p>Click below to log in using Auth0 Universal Login.</p>
+      <br>
+      <a href="/login" class="btn">Log In with Auth0</a>
+    <% } %>
+  </div>
+
+</body>
+</html>

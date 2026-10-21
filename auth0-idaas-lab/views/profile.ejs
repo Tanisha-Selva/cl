@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protected Profile Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    a {
+      color: #eb5424;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Protected Profile Page</h1>
+    <p>This route is protected by <code>requiresAuth()</code> middleware.</p>
+    
+    <h3>User Identity Claims (ID Token Data):</h3>
+    <pre><%= JSON.stringify(user, null, 2) %></pre>
+
+    <br>
+    <a href="/">← Back to Home</a> | <a href="/logout">Log Out</a>
+  </div>
+
+</body>
+</html>

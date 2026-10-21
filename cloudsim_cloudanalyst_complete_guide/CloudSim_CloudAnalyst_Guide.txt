@@ -1,0 +1,113 @@
+========================================================================
+            CLOUD LAB EXAM GUIDE: CLOUDSIM & CLOUDANALYST
+                 (WINDOWS ENVIRONMENT SETUP & EXAM STEPS)
+========================================================================
+
+------------------------------------------------------------------------
+PART 1: HOW TO FIND & LAUNCH CLOUDSIM AND CLOUDANALYST ON WINDOWS
+------------------------------------------------------------------------
+
+A. CLOUDSIM (IDE-based Simulator):
+1. Open Eclipse IDE from the Start Menu on Windows.
+2. Look at 'Package Explorer' on the left side:
+   - IF PRESENT: Expand 'cloudsim' -> 'src' -> 'org.cloudbus.cloudsim.examples'.
+   - IF MISSING:
+     a. Go to File -> Import...
+     b. Select General -> Existing Projects into Workspace -> Click Next.
+     c. Click Browse next to 'Select root directory'.
+     d. Locate the 'cloudsim' folder (check Desktop, Downloads, or C:\cloudsim).
+     e. Click Finish.
+
+B. CLOUDANALYST (GUI-based Tool):
+1. Open File Explorer (Win + E).
+2. Click 'This PC' and search for 'CloudAnalyst.jar' in the top-right search box.
+3. Common folder locations:
+   - C:\CloudAnalyst\
+   - C:\Users\<Username>\Desktop\CloudAnalyst\
+   - C:\Users\<Username>\Downloads\CloudAnalyst\
+4. Launch Options:
+   - Option A: Double-click 'CloudAnalyst.jar' (or 'CloudAnalyst.bat').
+   - Option B: Open Command Prompt (cmd), navigate to the folder, and run:
+     java -jar CloudAnalyst.jar
+
+
+========================================================================
+PART 2: RUNNING BASIC SIMULATIONS
+========================================================================
+
+A. CLOUDSIM BASIC SIMULATION:
+1. In Eclipse Package Explorer, navigate to:
+   cloudsim -> src -> org.cloudbus.cloudsim.examples
+2. Double-click 'CloudSimExample1.java' to open the source file.
+3. Click the green Play button (▶) in the top toolbar 
+   (OR Right-click 'CloudSimExample1.java' -> Run As -> 1 Java Application).
+4. View Output: Look at the bottom 'Console' tab in Eclipse. You will see:
+   - Datacenter creation status
+   - Broker initialization logs
+   - VM creation and Cloudlet execution start/finish details.
+
+B. CLOUDANALYST BASIC SIMULATION:
+1. Launch CloudAnalyst GUI using Step 1B above.
+2. Click 'Configure Simulation' on the main window.
+3. User Bases Tab: Ensure default Region 0 and Requests/User/Hr (60) are set.
+4. Data Centers Tab: Ensure at least Datacenter DC1 is enabled in Region 0.
+5. Service Brokers Tab: Confirm 'Closest Data Center' policy is selected.
+6. Click 'Run Simulation'.
+7. View Output: A graphical metrics dashboard will display Overall Response Time,
+   Data Center Processing Time, and Cost Summary.
+
+
+========================================================================
+PART 3: RESOURCE ALLOCATION (EXAM MODIFICATIONS)
+========================================================================
+
+A. CLOUDSIM RESOURCE ALLOCATION (CODE EDITS IN CloudSimExample1.java):
+
+1. Host (Physical Server Hardware) Resource Allocation:
+   ----------------------------------------------------
+   // Locate Host creation block and edit variables:
+   int ram = 2048;         // Physical RAM in MB
+   long storage = 1000000; // Physical Storage in MB
+   int bw = 10000;         // Physical Bandwidth
+   int mips = 1000;        // CPU processing speed per core
+
+2. Virtual Machine (VM) Resource Allocation:
+   ------------------------------------------
+   // Locate VM creation block and edit parameters:
+   int vmid = 0;
+   int mips = 250;       // VM CPU Speed (MIPS)
+   long size = 10000;    // VM Image Size
+   int ram = 512;        // VM Allocated Memory (RAM)
+   long bw = 1000;       // VM Bandwidth
+   int pesNumber = 1;    // Allocated CPU cores per VM
+
+3. Cloudlet (Task / Workload) Resource Allocation:
+   ------------------------------------------------
+   // Locate Cloudlet creation block and edit parameters:
+   long length = 400000; // Task length in MIPS instructions
+   long fileSize = 300;  // Input file size
+   long outputSize = 300;// Output file size
+   int pesNumber = 1;    // Required CPU cores for task
+
+4. Run modified code using green Play button (▶) to display updated Console logs.
+
+
+B. CLOUDANALYST RESOURCE ALLOCATION (GUI SETTINGS):
+
+1. Workload Demand Allocation (User Bases Tab):
+   - Set Requests per User per Hour (e.g., 60 or 100).
+   - Set Data Size per Request (e.g., 300 bytes).
+
+2. Datacenter & VM Allocation (Data Centers Tab):
+   - Click 'Physical Hardware' to configure Host count, RAM per machine, and Storage.
+   - Adjust total VM Count (e.g., 5 or 10 VMs).
+   - Adjust VM Memory (RAM), Image Size, and MIPS per VM.
+
+3. Load Balancing & Routing Policies (Service Brokers Tab):
+   - Select Service Broker Policy:
+     * Closest Data Center (Lowest network latency)
+     * Optimize Response Time (Dynamic routing to fastest DC)
+     * Reconfigure Dynamically with Load Balance (Prevents overload)
+
+4. Click 'Run Simulation' to observe changed Response Time charts and Cost graphs.
+========================================================================

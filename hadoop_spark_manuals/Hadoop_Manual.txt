@@ -1,0 +1,67 @@
+========================================================================
+             EXAM MANUAL: APACHE HADOOP (MAPREDUCE)
+========================================================================
+
+------------------------------------------------------------------------
+STEP 1: CHECK IF HADOOP IS ALREADY INSTALLED
+------------------------------------------------------------------------
+Run these commands in the terminal:
+
+1. Check Hadoop version:
+   hadoop version
+
+2. Check standard installation directories:
+   ls /usr/local/hadoop /opt/hadoop ~/hadoop 2>/dev/null
+
+3. Check environment variables:
+   echo $HADOOP_HOME
+   echo $JAVA_HOME
+
+* IF 'hadoop version' WORKS:
+  Hadoop is ready! Proceed directly to STEP 4 (MapReduce Execution).
+
+* IF COMMAND NOT FOUND BUT DIRECTORIES EXIST:
+  Export environment variables temporarily for your session:
+  export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+  export HADOOP_HOME=/usr/local/hadoop
+  export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+------------------------------------------------------------------------
+STEP 2: FRESH INSTALLATION (STANDALONE / LOCAL MODE)
+------------------------------------------------------------------------
+If Hadoop is completely missing, run this fast-track standalone setup:
+
+1. Install Java 11:
+   sudo apt update && sudo apt install -y openjdk-11-jdk wget tar
+
+2. Export Java Home:
+   export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+3. Download & Extract Hadoop 3.3.6:
+   wget https://archive.apache.org/dist/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+   tar -xvf hadoop-3.3.6.tar.gz
+   cd hadoop-3.3.6
+
+4. Set Environment Variables:
+   export HADOOP_HOME=$(pwd)
+   export PATH=$PATH:$HADOOP_HOME/bin
+
+------------------------------------------------------------------------
+STEP 3: VERIFY HADOOP INSTALLATION
+------------------------------------------------------------------------
+hadoop version
+
+------------------------------------------------------------------------
+STEP 4: EXECUTE MAPREDUCE WORDCOUNT JOB
+------------------------------------------------------------------------
+1. Create an input directory and a sample text file:
+   mkdir input
+   echo "hadoop mapreduce spark hadoop cloud computing hadoop spark" > input/file.txt
+
+2. Run the built-in MapReduce WordCount example:
+   hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount input output
+
+3. View MapReduce execution output:
+   cat output/part-r-00000
+
+========================================================================

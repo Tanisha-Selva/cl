@@ -1,0 +1,177 @@
+REST API TESTING USING POSTMAN — QUICK LAB GUIDE
+=================================================
+
+1. AIM
+Create a simple REST API using Node.js and Express, then test GET, POST,
+PUT and DELETE requests using Postman.
+
+2. FILE SETUP
+Create a folder, for example: rest-api
+Inside it, create a file named server.js and paste the generic code supplied
+with this guide.
+
+3. OPEN THE TERMINAL IN THAT FOLDER
+Run these commands one by one:
+
+    npm init -y
+    npm install express
+    node server.js
+
+Expected message:
+    Server running at http://localhost:3000
+
+Keep this terminal open while using Postman. To stop the server, press Ctrl+C.
+
+4. TEST IN POSTMAN
+
+A. GET — View all records
+    Method: GET
+    URL: http://localhost:3000/records
+    Click Send.
+    Expected: the full records array.
+
+B. GET — View one record
+    Method: GET
+    URL: http://localhost:3000/records/1
+    Click Send.
+    Expected: the record whose id is 1.
+
+C. POST — Add a record
+    Method: POST
+    URL: http://localhost:3000/records
+    Choose Body > raw > JSON.
+    Enter:
+    {
+      "id": 3,
+      "name": "Kumar",
+      "category": "IT"
+    }
+    Click Send. Use GET /records to confirm it was added.
+
+D. PUT — Update a record
+    Method: PUT
+    URL: http://localhost:3000/records/3
+    Choose Body > raw > JSON.
+    Enter:
+    {
+      "name": "Kumar Raj",
+      "category": "CSE"
+    }
+    Click Send. Use GET /records to confirm the change.
+
+E. DELETE — Delete a record
+    Method: DELETE
+    URL: http://localhost:3000/records/3
+    Click Send. Use GET /records to confirm it was deleted.
+
+IMPORTANT: This example stores data in memory. Restarting the server resets
+the array to the original sample records.
+
+5. HOW TO ADAPT THE CODE TO A QUESTION
+
+First identify:
+- What is the resource? Examples: students, books, products, appointments.
+- What fields are required? Examples: id, name, department, price, status.
+- What field should be used to find a record for GET/PUT/DELETE?
+
+A. Change the resource name / URL
+Example: change records to students in the route URLs:
+    app.get("/students", ...)
+    app.get("/students/:id", ...)
+    app.post("/students", ...)
+    app.put("/students/:id", ...)
+    app.delete("/students/:id", ...)
+Use the same URL in Postman, e.g. http://localhost:3000/students.
+Changing the URL string does not require changing the JavaScript variable name
+records, although you may rename it for clarity if you update every use.
+
+B. Change the sample data
+For a student scenario:
+    let records = [
+      { id: 1, name: "Arun", department: "IT" },
+      { id: 2, name: "Priya", department: "CSE" }
+    ];
+Then send matching JSON in Postman, for example:
+    { "id": 3, "name": "Kumar", "department": "IT" }
+
+Keep field names consistent in the sample data and Postman JSON.
+
+C. If the question says UPDATE or DELETE by NAME instead of ID
+You must change BOTH:
+1) the route parameter (for example :id to :name), AND
+2) the condition that finds/filters the record (id to name).
+
+DELETE by name — replace the DELETE route with:
+    app.delete("/records/:name", (req, res) => {
+        const name = req.params.name;
+        const oldLength = records.length;
+        records = records.filter(x => x.name != name);
+
+        if (records.length === oldLength) {
+            return res.status(404).json({ message: "Record not found" });
+        }
+
+        res.json({ message: "Record deleted" });
+    });
+
+Test with:
+    DELETE http://localhost:3000/records/Arun
+
+UPDATE by name — replace the PUT route with:
+    app.put("/records/:name", (req, res) => {
+        const record = records.find(x => x.name == req.params.name);
+
+        if (!record) {
+            return res.status(404).json({ message: "Record not found" });
+        }
+
+        Object.assign(record, req.body);
+        res.json({ message: "Record updated", data: record });
+    });
+
+Test with:
+    PUT http://localhost:3000/records/Arun
+Body > raw > JSON:
+    { "category": "CSE" }
+
+Note: If multiple records have the same name, this DELETE-by-name version deletes
+all records with that name. The UPDATE-by-name version updates only the first match.
+Use a unique identifier when possible.
+
+D. If the question uses another field, such as email or productId
+Apply the same pattern:
+    route: /records/:email
+    find:  x.email == req.params.email
+    filter to keep others: x.email != req.params.email
+
+For example, DELETE by email:
+    records = records.filter(x => x.email != req.params.email);
+
+E. If the question asks to update only one field
+You can send only that field in PUT JSON because Object.assign updates the
+provided properties and leaves other properties unchanged.
+Example:
+    { "status": "Delivered" }
+
+6. QUICK MEMORY TABLE
+
+Operation | Route | Purpose
+GET       | /records        | View all
+GET       | /records/:id    | View one by ID
+POST      | /records       | Add one
+PUT       | /records/:id    | Update one by ID
+DELETE    | /records/:id    | Delete one by ID
+
+Common method:
+- Change ID to name: update :id to :name AND use req.params.name with x.name.
+- Change the resource: update route URLs and the URLs entered in Postman.
+- Change the scenario: update sample fields and matching JSON body.
+- If the exam only asks you to test an API already given, use Postman as instructed;
+  you do not need to write a new server unless asked.
+
+7. COMMON ERRORS
+- Server is not running: run node server.js and keep the terminal open.
+- Cannot connect: check port 3000 and the URL.
+- POST/PUT JSON not recognized: choose Body > raw > JSON.
+- Route not found: make sure the Postman URL and Express route match exactly.
+- Changes disappear after restart: this example uses an in-memory array, not a database.

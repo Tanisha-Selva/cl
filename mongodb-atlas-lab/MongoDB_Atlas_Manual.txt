@@ -1,0 +1,62 @@
+========================================================================
+             CLOUD LAB: MONGODB ATLAS DBaaS (PYTHON)
+========================================================================
+
+Overview:
+This project demonstrates Database as a Service (DBaaS) using MongoDB Atlas 
+and Python (pymongo). It establishes a remote cloud database connection and 
+performs all 6 required CRUD operations:
+1) Insert One Record
+2) Insert Many Records
+3) List All Records
+4) Retrieve a Particular Record
+5) Update a Record
+6) Delete a Record
+
+------------------------------------------------------------------------
+STEP 1: Create MongoDB Atlas Cluster & Database User
+------------------------------------------------------------------------
+1. Go to MongoDB Atlas: https://www.mongodb.com/cloud/atlas
+2. Sign in and create a Free M0 Cluster (Select AWS/GCP Free Tier region).
+3. Go to Security > Database Access:
+   - Click "Add New Database User".
+   - Username: alice
+   - Password: your_password (e.g., LabPass123)
+   - Privilege: Select "Read and write to any database".
+   - Click "Add User".
+4. Go to Security > Network Access:
+   - Click "Add IP Address".
+   - Click "Allow Access from Anywhere" (0.0.0.0/0).
+   - Click "Confirm".
+
+------------------------------------------------------------------------
+STEP 2: Get Your Connection String
+------------------------------------------------------------------------
+1. Go to Deployment > Database.
+2. Click "Connect" next to your cluster.
+3. Choose "Drivers" (Python).
+4. Copy the connection SRV address. It looks like:
+   mongodb+srv://alice:<password>@cluster0.xxxx.mongodb.net/?retryWrites=true&w=majority
+
+------------------------------------------------------------------------
+STEP 3: Configure Environment Variables
+------------------------------------------------------------------------
+1. Open `.env` in a text editor.
+2. Replace the connection string with your actual Atlas connection URL:
+   MONGO_URI=mongodb+srv://alice:LabPass123@cluster0.xxxx.mongodb.net/?retryWrites=true&w=majority
+
+------------------------------------------------------------------------
+STEP 4: Install Dependencies & Run Script
+------------------------------------------------------------------------
+Open your terminal inside this project directory and run:
+
+   pip install -r requirements.txt
+   python lab_mongodb.py
+
+------------------------------------------------------------------------
+STEP 5: Verify Results in Atlas Cloud Console
+------------------------------------------------------------------------
+1. Go to MongoDB Atlas Website -> Deployment -> Database.
+2. Click "Browse Collections".
+3. Select `student_db` -> `student_table` to view live inserted and updated records.
+========================================================================

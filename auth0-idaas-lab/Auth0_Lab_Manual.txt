@@ -1,0 +1,59 @@
+========================================================================
+             CLOUD LAB: AUTH0 IDaaS AUTHENTICATION (NODE.JS)
+========================================================================
+
+Overview:
+This project demonstrates Identity as a Service (IDaaS) by setting up 
+user authentication using Auth0, OpenID Connect (OIDC), Node.js, and Express.
+It includes a public homepage with a Log In button and a protected profile page.
+
+------------------------------------------------------------------------
+STEP 1: Set Up Auth0 Application
+------------------------------------------------------------------------
+1. Log into your Auth0 Dashboard: https://manage.auth0.com
+2. Go to Applications > Applications and click "Create Application".
+3. Name: "Cloud Lab App"
+4. App Type: Select "Regular Web Applications" and click "Create".
+5. Click on the "Settings" tab and set the following URLs:
+   - Allowed Callback URLs: http://localhost:3000/callback
+   - Allowed Logout URLs:   http://localhost:3000/
+   - Allowed Web Origins:   http://localhost:3000
+6. Scroll down and click "Save Changes".
+7. Copy the following credentials from the Settings tab:
+   - Domain
+   - Client ID
+   - Client Secret
+
+------------------------------------------------------------------------
+STEP 2: Configure Environment Variables
+------------------------------------------------------------------------
+1. Open `.env` in a text editor.
+2. Fill in your credentials:
+
+   ISSUER_BASE_URL=https://YOUR_AUTH0_DOMAIN.auth0.com
+   CLIENT_ID=YOUR_AUTH0_CLIENT_ID
+   CLIENT_SECRET=YOUR_AUTH0_CLIENT_SECRET
+   SECRET=a_long_random_string_at_least_32_characters_long
+   BASE_URL=http://localhost:3000
+   PORT=3000
+
+------------------------------------------------------------------------
+STEP 3: Install Dependencies
+------------------------------------------------------------------------
+Open terminal inside project directory and run:
+
+   npm init -y
+   npm install express express-openid-connect ejs dotenv
+
+------------------------------------------------------------------------
+STEP 4: Run & Test Application
+------------------------------------------------------------------------
+1. Run the server:
+   node server.js
+
+2. Open browser to http://localhost:3000
+   - Click "Log In with Auth0".
+   - You will be redirected to Auth0's Universal Login.
+   - After successful authentication, you will see your name, email, and a "Log Out" button.
+   - Click "View Protected Profile" to see ID token claim details.
+========================================================================

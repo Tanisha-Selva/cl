@@ -1,0 +1,85 @@
+========================================================================
+             EXAM MANUAL: APACHE SPARK (STANDALONE & PYSPARK)
+========================================================================
+
+------------------------------------------------------------------------
+STEP 1: CHECK IF SPARK IS ALREADY INSTALLED
+------------------------------------------------------------------------
+Run these commands in the terminal:
+
+1. Check Spark Submit version:
+   spark-submit --version
+
+2. Check PySpark version:
+   pyspark --version
+
+3. Check standard installation directories:
+   ls /usr/local/spark /opt/spark ~/spark 2>/dev/null
+
+4. Check environment variable:
+   echo $SPARK_HOME
+
+* IF 'spark-submit' OR 'pyspark' WORKS:
+  Spark is ready! Proceed directly to STEP 4 (Execution).
+
+* IF DIRECTORIES EXIST IN /usr/local/spark OR /opt/spark:
+  export SPARK_HOME=/opt/spark
+  export PATH=$PATH:$SPARK_HOME/bin
+
+------------------------------------------------------------------------
+STEP 2: FRESH INSTALLATION (FASTEST METHODS)
+------------------------------------------------------------------------
+
+METHOD A: PySpark (Fastest via PIP - 30 Seconds)
+   pip install pyspark
+
+METHOD B: Download Binaries (Standalone Tarball)
+   sudo apt update && sudo apt install -y openjdk-11-jdk wget tar
+   wget https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz
+   tar -xvf spark-3.4.1-bin-hadoop3.tgz
+   cd spark-3.4.1-bin-hadoop3
+   export SPARK_HOME=$(pwd)
+   export PATH=$PATH:$SPARK_HOME/bin
+
+------------------------------------------------------------------------
+STEP 3: CREATE SPARK PYTHON SCRIPT (spark_demo.py)
+------------------------------------------------------------------------
+Save the following code as 'spark_demo.py':
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import explode, split, col
+
+# Initialize local Spark Session
+spark = SparkSession.builder \
+    .appName("LabSparkDemo") \
+    .master("local[*]") \
+    .getOrCreate()
+
+print("=== Spark Session Created Successfully ===")
+
+# Input Data
+data = ["cloud computing", "apache spark", "hadoop mapreduce", "apache spark cloud"]
+df = spark.createDataFrame([(line,) for line in data], ["text"])
+
+# Process Word Count
+words_df = df.select(explode(split(col("text"), " ")).alias("word"))
+word_counts = words_df.groupBy("word").count()
+
+print("--- Spark Word Count Output ---")
+word_counts.show()
+
+spark.stop()
+
+------------------------------------------------------------------------
+STEP 4: EXECUTE SPARK PROGRAM
+------------------------------------------------------------------------
+Run using Python:
+   python3 spark_demo.py
+
+OR run using spark-submit:
+   spark-submit spark_demo.py
+
+OR run built-in Spark Pi calculation example:
+   spark-submit --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_*.jar 10
+
+========================================================================

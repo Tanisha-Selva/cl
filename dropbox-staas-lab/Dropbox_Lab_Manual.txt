@@ -1,0 +1,75 @@
+========================================================================
+             CLOUD LAB: DROPBOX STaaS (NODE.JS / EXPRESS)
+========================================================================
+
+Overview:
+This project demonstrates Storage as a Service (STaaS) by building a 
+web application using Node.js, Express, and the official Dropbox SDK.
+It allows users to upload files to Dropbox and view/download existing files.
+
+------------------------------------------------------------------------
+STEP 1: Create a Dropbox App & Get Access Token
+------------------------------------------------------------------------
+1. Go to the Dropbox Developer Console: https://www.dropbox.com/developers/apps
+2. Log in with your Dropbox account.
+3. Click "Create app".
+4. Choose an API: Select "Scoped access".
+5. Choose type of access: Choose "App folder" or "Full Dropbox" (App folder is recommended).
+6. Name your app (e.g., "MyCloudLabSTaaS-<your-name>") and click "Create app".
+7. Go to the "Permissions" tab:
+   - Check `files.content.write`
+   - Check `files.content.read`
+   - Click "Submit" at the bottom to save permissions.
+8. Go back to the "Settings" tab:
+   - Scroll down to "Generated access token".
+   - Click the "Generate" button.
+   - Copy this long access token string.
+
+------------------------------------------------------------------------
+STEP 2: Set Up Project Folder
+------------------------------------------------------------------------
+1. Extract all files into a single project directory:
+   dropbox-staas/
+   ├── .env
+   ├── .gitignore
+   ├── Dropbox_Lab_Manual.txt
+   ├── server.js
+   └── public/
+       └── index.html
+
+2. Open your terminal or command prompt inside the `dropbox-staas` folder.
+
+------------------------------------------------------------------------
+STEP 3: Install Required Dependencies
+------------------------------------------------------------------------
+Run the following commands in terminal:
+
+   npm init -y
+   npm install express express-fileupload dropbox dotenv isomorphic-fetch
+
+------------------------------------------------------------------------
+STEP 4: Configure Access Token
+------------------------------------------------------------------------
+1. Open `.env` in a text editor.
+2. Paste your copied Dropbox Access Token after `DROPBOX_ACCESS_TOKEN=`:
+
+   DROPBOX_ACCESS_TOKEN=sl.u.AF3x_your_actual_token_here...
+
+------------------------------------------------------------------------
+STEP 5: Run the Server
+------------------------------------------------------------------------
+Run the following command:
+
+   node server.js
+
+You should see:
+   Server running on http://localhost:3000
+
+------------------------------------------------------------------------
+STEP 6: Test Upload and Download
+------------------------------------------------------------------------
+1. Open your browser and navigate to `http://localhost:3000`.
+2. Select a file and click "Upload to Dropbox".
+3. Refresh or click "Refresh File List" to see all files in your Dropbox.
+4. Click "Download" next to any file to fetch it directly.
+========================================================================

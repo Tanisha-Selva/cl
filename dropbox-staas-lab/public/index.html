@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropbox STaaS - Cloud Lab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f4f7f6;
+      color: #333;
+    }
+    h1 {
+      color: #0061fe;
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .file-input {
+      margin: 10px 0;
+    }
+    button {
+      background-color: #0061fe;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #0046b8;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    a.btn-download {
+      text-decoration: none;
+      color: white;
+      background-color: #28a745;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    a.btn-download:hover {
+      background-color: #218838;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dropbox STaaS Cloud Lab</h1>
+
+  <div class="card">
+    <h2>Upload File</h2>
+    <form id="uploadForm">
+      <input type="file" id="fileInput" class="file-input" required />
+      <br>
+      <button type="submit">Upload to Dropbox</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>Files in Dropbox</h2>
+    <button onclick="loadFiles()">Refresh File List</button>
+    <ul id="fileList"></ul>
+  </div>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const statusDiv = document.getElementById('status');
+    const fileList = document.getElementById('fileList');
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!fileInput.files.length) return;
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      statusDiv.textContent = 'Uploading...';
+      statusDiv.style.color = 'blue';
+
+      try {
+        const res = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok) {
+          statusDiv.textContent = 'Upload successful!';
+          statusDiv.style.color = 'green';
+          fileInput.value = '';
+          loadFiles();
+        } else {
+          statusDiv.textContent = 'Error: ' + data.error;
+          statusDiv.style.color = 'red';
+        }
+      } catch (err) {
+        statusDiv.textContent = 'Upload failed.';
+        statusDiv.style.color = 'red';
+      }
+    });
+
+    async function loadFiles() {
+      fileList.innerHTML = 'Loading files...';
+      try {
+        const res = await fetch('/files');
+        const files = await res.json();
+        fileList.innerHTML = '';
+
+        if (!files.length) {
+          fileList.innerHTML = '<li>No files found.</li>';
+          return;
+        }
+
+        files.forEach(file => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span><strong>${file.name}</strong> (${(file.size / 1024).toFixed(1)} KB)</span>
+            <a href="/download?path=${encodeURIComponent(file.path)}" class="btn-download">Download</a>
+          `;
+          fileList.appendChild(li);
+        });
+      } catch (err) {
+        fileList.innerHTML = '<li>Error loading file list.</li>';
+      }
+    }
+
+    // Load files on page load
+    loadFiles();
+  </script>
+
+</body>
+</html>
