@@ -111,3 +111,68 @@ B. CLOUDANALYST RESOURCE ALLOCATION (GUI SETTINGS):
 
 4. Click 'Run Simulation' to observe changed Response Time charts and Cost graphs.
 ========================================================================
+
+================================================================================
+               EXERCISE: CLOUDSIM SETUP & SIMULATION IN ECLIPSE
+================================================================================
+
+AIM:
+To configure CloudSim in Eclipse IDE by creating a Java project, linking 
+external JAR libraries, and executing CloudSim simulation examples.
+
+PREREQUISITES:
+- Installed Eclipse IDE
+- CloudSim folder containing source code and 'lib' directory with dependency JARs
+
+================================================================================
+STEP-BY-STEP PROCEDURE
+================================================================================
+
+STEP 1: CREATE A NEW JAVA PROJECT
+1. Open Eclipse IDE.
+2. Go to top menu: File -> New -> Java Project.
+3. In "Project name", enter a name (e.g., Demo-Cloud).
+4. Uncheck the "Use default location" checkbox.
+5. Click "Browse..." next to Location and select your local CloudSim folder 
+   (e.g., cloudsim-3.0 or cloudsim-5.0).
+6. Click "Select Folder" and then click "Next".
+
+STEP 2: ADD EXTERNAL JAR LIBRARIES (DEPENDENCIES)
+1. In the "Java Settings" window, switch to the "Libraries" tab at the top.
+2. Click on "Classpath".
+3. Click the "Add External JARs..." button on the right side.
+4. Navigate to the "lib" folder inside your CloudSim directory.
+5. Select all the .jar files inside the lib folder and click "Open".
+6. Click "Finish" to complete project creation.
+
+STEP 3: LOCATE CLOUDSIM EXAMPLE FILES
+1. Look at the "Package Explorer" sidebar on the left.
+   (If not visible, go to: Window -> Show View -> Package Explorer).
+2. Expand your project (Demo-Cloud) and navigate through:
+   modules -> cloudsim-examples -> src/main/java -> org.cloudbus.cloudsim.examples
+3. Double-click "CloudSimExample1.java" to open the source code in the editor.
+
+STEP 4: RUN THE SIMULATION
+1. Right-click anywhere inside the open "CloudSimExample1.java" editor window 
+   (or right-click the file in Package Explorer).
+2. Select: Run As -> Java Application.
+3. Observe the execution logs printed in the "Console" window at the bottom.
+
+================================================================================
+VERIFICATION & RESULT LOGS
+================================================================================
+
+The Console window will display the simulation output:
+- Datacenter creation confirmation
+- Broker registration and Virtual Machine (VM) allocations
+- Execution log table containing:
+  * Cloudlet ID
+  * STATUS (SUCCESS)
+  * Data Center ID
+  * VM ID
+  * Execution Time, Start Time, and Finish Time
+
+RESULT:
+Thus, the CloudSim simulation framework was successfully configured in Eclipse, 
+and example simulations were executed.
+================================================================================
