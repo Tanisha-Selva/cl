@@ -1,0 +1,242 @@
+================================================================================
+            COMPLETE LAB MANUAL: OPENMP, MPI, HADOOP, SPARK
+================================================================================
+
+
+================================================================================
+          PART 1: OPENMP (SHARED MEMORY PARALLEL PROGRAMMING)
+================================================================================
+
+1. INSTALL COMPILER:
+   sudo apt update
+   sudo apt install gcc -y
+
+2. CREATE PROGRAM FILE (lab_openmp.c):
+   nano lab_openmp.c
+
+   PASTE CODE:
+   -----------------------------------------------------------------------------
+   #include <stdio.h>
+   #include <omp.h>
+
+   int main() {
+       // Request 4 parallel execution threads
+       omp_set_num_threads(4);
+
+       #pragma omp parallel
+       {
+           int thread_id = omp_get_thread_num();
+           int total_threads = omp_get_num_threads();
+           printf("Hello World from OpenMP Thread %d out of %d\n", thread_id, total_threads);
+       }
+       return 0;
+   }
+   -----------------------------------------------------------------------------
+
+3. COMPILE & EXECUTE:
+   gcc -fopenmp lab_openmp.c -o openmp_demo
+   ./openmp_demo
+
+
+================================================================================
+          PART 2: MPI (MESSAGE PASSING INTERFACE)
+================================================================================
+
+1. INSTALL MPI LIBRARIES:
+   sudo apt update
+   sudo apt install openmpi-bin libopenmpi-dev -y
+
+2. CREATE PROGRAM FILE (lab_mpi.c):
+   nano lab_mpi.c
+
+   PASTE CODE:
+   -----------------------------------------------------------------------------
+   #include <mpi.h>
+   #include <stdio.h>
+
+   int main(int argc, char** argv) {
+       MPI_Init(&argc, &argv);
+
+       int rank, size;
+       MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+       MPI_Comm_size(MPI_COMM_WORLD, &size);
+       
+       printf("Hello World from MPI Process %d out of %d\n", rank, size);
+       
+       MPI_Finalize();
+       return 0;
+   }
+   -----------------------------------------------------------------------------
+
+3. COMPILE & EXECUTE:
+   mpicc lab_mpi.c -o mpi_demo
+   mpirun -np 4 ./mpi_demo
+
+
+================================================================================
+          PART 3: APACHE HADOOP (SINGLE-NODE CLUSTER SETUP & WORDCOUNT)
+================================================================================
+
+STEP 1: INSTALLATION & PREREQUISITES
+   sudo apt update
+   sudo apt install openjdk-11-jdk ssh -y
+
+   cd ~
+   wget https://downloads.apache.org/hadoop/common/stable/hadoop-3.3.6.tar.gz
+   # Note: If wget fails, extract existing downloaded archive:
+   # tar -xvf ~/Downloads/hadoop-*.tar.gz -C ~
+   tar -xvf hadoop-3.3.6.tar.gz
+   mv hadoop-3.3.6 hadoop
+
+STEP 2: SET ENVIRONMENT VARIABLES (~/.bashrc)
+   nano ~/.bashrc
+
+   ADD THESE LINES TO THE BOTTOM:
+   export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+   export HADOOP_HOME=~/hadoop
+   export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+   APPLY CHANGES:
+   source ~/.bashrc
+
+STEP 3: CONFIGURATION FILES SETUP
+
+1. Edit core-site.xml:
+   nano ~/hadoop/etc/hadoop/core-site.xml
+
+   PASTE BETWEEN <configuration> AND </configuration>:
+   <property>
+       <name>fs.defaultFS</name>
+       <value>hdfs://localhost:9000</value>
+   </property>
+
+2. Edit hdfs-site.xml:
+   nano ~/hadoop/etc/hadoop/hdfs-site.xml
+
+   PASTE BETWEEN <configuration> AND </configuration>:
+   <property>
+       <name>dfs.replication</name>
+       <value>1</value>
+   </property>
+
+3. Set JAVA_HOME in hadoop-env.sh:
+   nano ~/hadoop/etc/hadoop/hadoop-env.sh
+   ADD/UNCOMMENT: export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+4. Configure Passwordless SSH:
+   ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+   cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+   chmod 0600 ~/.ssh/authorized_keys
+   ssh localhost  # Type 'yes' if asked, then type 'exit'
+
+STEP 4: FORMAT NAMENODE & START HADOOP DAEMONS
+   # 1. Format NameNode (RUN ONLY ONCE DURING FRESH SETUP):
+   hdfs namenode -format
+
+   # 2. Start HDFS and YARN daemons:
+   start-dfs.sh
+   start-yarn.sh
+
+   # 3. Verify active services:
+   jps
+   # Required Output: NameNode, DataNode, SecondaryNameNode, ResourceManager, NodeManager
+   # Web Interface: http://localhost:9870
+
+STEP 5: EXECUTE MAPREDUCE WORDCOUNT JOB
+   # 1. Create a local sample text file:
+   echo "hadoop spark cloud openmp mpi hadoop spark spark" > ~/input_wordcount.txt
+
+   # 2. Create target directory inside HDFS file system:
+   hdfs dfs -mkdir -p /user/hadoop/input
+
+   # 3. Upload local file into HDFS:
+   hdfs dfs -put ~/input_wordcount.txt /user/hadoop/input/
+
+   # 4. Verify file upload inside HDFS:
+   hdfs dfs -ls /user/hadoop/input/
+
+   # 5. Run Hadoop MapReduce WordCount example:
+   hadoop jar ~/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount /user/hadoop/input /user/hadoop/wordcount_output
+
+   # 6. Read job execution output from HDFS:
+   hdfs dfs -cat /user/hadoop/wordcount_output/part-r-00000
+
+   EXPECTED OUTPUT:
+   cloud   1
+   hadoop  2
+   mpi     1
+   openmp  1
+   spark   3
+
+
+================================================================================
+          PART 4: APACHE SPARK (STANDALONE INSTALLATION & WORDCOUNT)
+================================================================================
+
+STEP 1: INSTALLATION
+   cd ~
+   wget https://downloads.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz
+   # Note: If wget fails, extract existing downloaded archive:
+   # tar -xvf ~/Downloads/spark-*.tgz -C ~
+   tar -xvf spark-3.5.1-bin-hadoop3.tgz
+   mv spark-3.5.1-bin-hadoop3 spark
+
+STEP 2: SET ENVIRONMENT VARIABLES (~/.bashrc)
+   nano ~/.bashrc
+
+   ADD THESE LINES TO THE BOTTOM:
+   export SPARK_HOME=~/spark
+   export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+   APPLY CHANGES:
+   source ~/.bashrc
+
+STEP 3: START SPARK CLUSTER SERVICES
+   start-master.sh
+   start-worker.sh spark://localhost:7077
+   # Web Interface: http://localhost:8080
+
+STEP 4: EXECUTE PYSPARK WORDCOUNT JOB
+   # 1. Create Python script file (spark_wordcount.py):
+   nano spark_wordcount.py
+
+   # 2. Paste PySpark WordCount code:
+   -----------------------------------------------------------------------------
+   from pyspark.sql import SparkSession
+
+   # Initialize Spark session
+   spark = SparkSession.builder \
+       .appName("SparkWordCount") \
+       .master("local[*]") \
+       .getOrCreate()
+
+   sc = spark.sparkContext
+
+   # Input text dataset
+   lines = sc.parallelize([
+       "hadoop spark cloud openmp mpi",
+       "hadoop spark spark"
+   ])
+
+   # WordCount Transformation & Action
+   counts = lines.flatMap(lambda line: line.split(" ")) \
+                 .map(lambda word: (word, 1)) \
+                 .reduceByKey(lambda a, b: a + b)
+
+   print("\n=================== SPARK WORDCOUNT RESULTS ===================")
+   for (word, count) in counts.collect():
+       print(f"{word}: {count}")
+   print("===============================================================\n")
+
+   spark.stop()
+   -----------------------------------------------------------------------------
+
+   # 3. Submit and run Spark job:
+   spark-submit spark_wordcount.py
+
+   EXPECTED OUTPUT:
+   hadoop: 2
+   spark: 3
+   cloud: 1
+   openmp: 1
+   mpi: 1
